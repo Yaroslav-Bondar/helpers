@@ -1,0 +1,72 @@
+.parent__item {
+	--size: 50px;
+	--half-size: calc(var(--size) / 2);
+	--color: violet;
+	padding: 0;
+	border-top: 0;
+	background: transparent;
+	filter: drop-shadow(0 0 2px #000);
+	cursor: pointer;
+}
+	.parent__item.parent__item_active {
+	--color: yellowgreen;
+}
+.points-star5 {
+    /* Modify size and color in parent element like:
+
+        <div class="parent__item">
+            <div class="points-star5"></div>
+        </div>
+        or
+        <div class="parent__item points-star5"></div>
+        
+        add to css:
+
+        .parent__item {
+            --size: 50px; // your value
+            --half-size: calc(var(--size) / 2);
+            --color: blue;
+        }
+    */    
+    position: relative;
+    display: block;
+    color: var(--color);
+    width: 0px;
+    height: 0px;
+    border-right: var(--half-size) solid transparent;
+    border-bottom: calc(var(--half-size) * 0.7) solid var(--color);
+    border-left: var(--half-size) solid transparent;
+    transform: rotate(35deg);
+}
+.points-star5:before {
+    border-bottom: calc(var(--half-size) * 0.8) solid var(--color);
+    border-left: calc(var(--half-size) * 0.3) solid transparent;
+    border-right: calc(var(--half-size) * 0.3) solid transparent;
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: calc(var(--half-size) * 0.45 * -1);
+    left: calc(var(--half-size) * 0.65 * -1);
+    display: block;
+    content: '';
+    transform: rotate(-35deg);
+}
+.points-star5:after {
+    position: absolute;
+    display: block;
+    color: blue;
+    top: calc(var(--half-size) * 0.03);
+    left: calc(var(--half-size) * -1.05);
+    width: 0px;
+    height: 0px;
+    border-right: var(--half-size) solid transparent;
+    border-bottom: calc(var(--half-size) * 0.7) solid var(--color);
+    border-left: var(--half-size) solid transparent;
+    transform: rotate(-70deg);
+    content: '';
+}
+
+.separator {
+	margin: 53px 0;
+}
+
