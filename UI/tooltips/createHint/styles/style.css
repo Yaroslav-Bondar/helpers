@@ -1,0 +1,9 @@
+body {
+    height: 2000px;
+}
+.tooltip {
+    /* must have an absolute position 
+        https://learn.javascript.ru/coordinates
+    */
+    position: absolute;
+}
