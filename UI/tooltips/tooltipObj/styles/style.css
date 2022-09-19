@@ -1,0 +1,6 @@
+.tooltip__item {
+    display: none;
+}
+.tooltip__item_active {
+    display: block;
+}
