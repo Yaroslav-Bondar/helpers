@@ -1,0 +1,21 @@
+.ancor {
+    display: inline;
+}
+.ancor2 {
+    display: inline;
+}
+.tooltip__item {
+    position: absolute;
+    display: none;
+    box-sizing: border-box;
+    width: auto;
+    padding: 3px 5px;
+    border-radius: 3px;
+    color: red;
+    font-size: 12px;
+    background-color: grey;
+    opacity: .9;
+    box-shadow: 1px 1px 10px var(black);
+    overflow: hidden;
+    z-index: 9999;
+}
