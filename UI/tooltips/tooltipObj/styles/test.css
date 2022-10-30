@@ -4,7 +4,7 @@
 .ancor2 {
     display: inline;
 }
-.tooltip__item {
+/* .tooltip__item {
     position: absolute;
     display: none;
     box-sizing: border-box;
@@ -15,7 +15,7 @@
     font-size: 12px;
     background-color: grey;
     opacity: .9;
-    box-shadow: 1px 1px 10px var(black);
+    box-shadow: 1px 1px 10px var(black); 
     overflow: hidden;
     z-index: 9999;
-}
+} */

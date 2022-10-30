@@ -11,6 +11,7 @@
 // https://learn.javascript.ru/weakmap-weakset
 // https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
 // https://stackoverflow.com/questions/28814585/how-to-check-if-type-is-boolean
+
 // {
 //     [Tooltip.generateId()]: new Tooltip('element', 'Hello I am Tooltip', 'left'),
 
@@ -33,6 +34,9 @@ function Tooltip(targetClassName, content = 'I am tooltip', position = 'top', st
 // Tooltip.tooltipArchive = new WeakMap();
 Tooltip.archive = Object.create(Object.prototype);
 // static methods
+/**
+ * Generating a unique id. For more details see Readme.md file
+ */
 Tooltip.uid = () => String(Date.now().toString(36) + Math.random().toString(16)).replace(/\./g, '');
 Tooltip.upperToHyphenLower = upper => '-' + upper.toLowerCase();
 Tooltip.styleToMultiline = style => style.replace(/;/g, ';\n');
@@ -136,23 +140,24 @@ Tooltip.prototype._hideTooltip = function () {
 
 // instances
 
-const tooltip = new Tooltip('element', 'Hello I am Tooltip', 'left');
+// const tooltip = 
+new Tooltip('element', 'Hello I am Tooltip', 'left');
 // console.log(tooltip.currentPosition = 'bottom');
 // tooltip.currentPosition;
 // console.log('tooltip currentPosition', tooltip.currentPosition);
 // tooltip.showStyles();
 // console.log(tooltip);
-const tooltip2 = new Tooltip('element2', 'Hello I am Tooltip 2', 'right', {
+// const tooltip2 = 
+new Tooltip('element2', 'Hello I am Tooltip 2', 'right', {
         backgroundColor: 'green', 
         color: 'orange',
         borderBottom: '2px solid red',
         borderTop: '4px dashed blue',
-        left: 0, 
     }); 
 //console.log(tooltip2);
-tooltip2.currentPosition = 'top';
-tooltip2.currentPosition = 'lefte';
-console.log('tooltip2.id', tooltip2.id);
+// tooltip2.currentPosition = 'top';
+// tooltip2.currentPosition = 'lefte';
+// console.log('tooltip2.id', tooltip2.id);
 // tooltip2.showStyles();
 //console.log(tooltip2.currentPosition);
 // inheritance
@@ -164,21 +169,22 @@ function TooltipExt(targetClassName, content = 'I am tooltip extended', position
     // call parents constructor
     Tooltip.call(this, targetClassName, content, position, styles);
 }
-console.log('archive', Tooltip.archive);
 // protype method inheritance 
 Object.setPrototypeOf(TooltipExt.prototype, Tooltip.prototype);
 // static method inheritance
 Object.setPrototypeOf(TooltipExt, Tooltip); // or: TooltipExt.__proto__ = Tooltip; 
-const tooltipExt = new TooltipExt('element3');
+//const tooltipExt = 
+new TooltipExt('element3');
+console.log('archive', Tooltip.archive);
 // console.log('tooltipExt', tooltipExt);
 // console.log('TooltipExt.__proto__:', TooltipExt.__proto__);
-tooltipExt.currentPosition = 'left';
+// tooltipExt.currentPosition = 'left';
 // tooltipExt.showStyles();
 // console.log('TooltipExt', TooltipExt);
 // console.log('tooltipExt.currentPosition', tooltipExt.currentPosition);
 // console.log('tooltipExt.constructor', tooltipExt.constructor);
 
-var styleObj = document.styleSheets[0].cssRules[0].style;
+//var styleObj = document.styleSheets[0].cssRules[0].style;
 
 // for(const sheet of document.styleSheets) {
 //     // console.log('sheet', Array.isArray(sheet));

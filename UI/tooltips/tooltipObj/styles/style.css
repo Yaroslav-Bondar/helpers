@@ -1,8 +1,11 @@
+body {
+    height: 2000px;
+}
 .tooltip {
     display: inline-block;
     position: relative;
 }
-/* .tooltip__item {
+.tooltip__item {
     position: absolute;
     display: none;
     box-sizing: border-box;
@@ -16,7 +19,7 @@
     box-shadow: 1px 1px 10px var(black);
     overflow: hidden;
     z-index: 9999;
-} */
+}
 .tooltip__item_active {
     display: block;
 }
