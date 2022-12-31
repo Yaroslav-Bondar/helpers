@@ -1,41 +1,24 @@
-// https://developer.mozilla.org/ru/docs/Web/API/Element/getAttribute
-// https://developer.mozilla.org/ru/docs/Web/API/Element/setAttribute
-// https://www.w3schools.com/jsref/prop_html_style.asp
-// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-// https://jsfiddle.net/Yaroslav_Bondar/gkp9u5qc/3/
+function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = null, objectReference) {
+    this._target = document.getElementById(targetId);
+    this._targetParent = this._target.parentElement;
+    // console.log('this._target', this._target.parentElement);
 
-// https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration/setProperty
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
-// https://learn.javascript.ru/weakmap-weakset
-// https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
-// https://stackoverflow.com/questions/28814585/how-to-check-if-type-is-boolean
-
-// {
-//     [Tooltip.generateId()]: new Tooltip('element', 'Hello I am Tooltip', 'left'),
-
-// }
-
-
-function Tooltip(targetClassName, content = 'I am tooltip', position = 'top', styles = null, archive) {
-    this._target = document.getElementsByClassName(targetClassName)[0];
     this._content = content; 
     this._position = position;
-    // this._styles = styles;
-    this._constructor = Object.getPrototypeOf(this).constructor;
-    this.id = this._constructor.uid();
-    this._constructor.archive[this.id] = this;
-    this._styles = styles ? this._constructor.styleHyphenFormat(styles) : styles;
-    // this._positions = new Set(['top', 'left', 'right', 'bottom']); // move it to the prototype !!!
-    this._setTooltip();
+    this._objectReference = objectReference;
+    // this.id = this.constructor.uid(); 
+    // this.constructor.archive.set(this, this.id);
+    this.constructor.archive.set(this, objectReference);
+    this._styles = styles ? this.constructor.styleHyphenFormat(styles) : styles;
+    // this._availablePositions = new Set(['top', 'left', 'right', 'bottom']); // move it to the prototype !!!
+    this._mount();
 }
 // static properties
-// Tooltip.tooltipArchive = new WeakMap();
-Tooltip.archive = Object.create(Object.prototype);
+Tooltip.archive = new WeakMap();
 // static methods
 /**
- * Generating a unique id. For more details see Readme.md file
+ * Generating a unique id. For more details see: 
+ * https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13#comment-1ol48
  */
 Tooltip.uid = () => String(Date.now().toString(36) + Math.random().toString(16)).replace(/\./g, '');
 Tooltip.upperToHyphenLower = upper => '-' + upper.toLowerCase();
@@ -47,68 +30,82 @@ Tooltip.styleHyphenFormat = function(styles) {
                         .replace(/[A-Z]/g, this.upperToHyphenLower) + ';';
     return output;
 }
+Tooltip.getObjectById = () => {
+    
+}
 // prototype getters/setters
 Object.defineProperties(Tooltip.prototype, {
     currentPosition: {
         get: function() {
-            console.log(`Position value is ${this._position}`);
+            // console.log(`Position value is ${this._position}`);
             return this._position;
         },
         set: function(value) {
             // check current entered position
             if(this._position === value) {
                 console.log(`Position change warning: Current position - ${this._position} is equivalent to given position - ${value} !!!`);
+                return;
             };
             // Check the entered keyword desrcribing the position.
-            if(!this._positions.has(value)) {
+            if(!this._availablePositions.has(value)) {
                 let positions = '';
-                this._positions.forEach(value => positions += `${value} `);
+                this._availablePositions.forEach(value => positions += `${value} `);
                 console.log(`Position change warning: Invalid position value. Must be a string containing one of the values: ${positions}`);
+                return;
             };
             this._tooltipItem.classList.replace(`tooltip__item_position_${this._position}`, `tooltip__item_position_${value}`);
+            // console.log(`the position has been changed from ${this._position} to ${value}`);
             this._position = value;
         },
-        
     },
     // available positions getter
-
 });
 // prototype properties
-Tooltip.prototype._positions = new Set(['top', 'left', 'right', 'bottom']);
-// Tooltip.prototype._classes = {
-//     tooltipItem: 'tooltip__item',
-// }
+Tooltip.prototype._availablePositions = new Set(['top', 'left', 'right', 'bottom']);
 // prototype methods
-Tooltip.prototype._setTooltip = function () {
+Tooltip.prototype._mount = function () {
     const tooltipContainer = document.createElement('div');
     const tooltipHtml = `<div id=${this.id} class='tooltip__item tooltip__item_position_${this._position}'>
                             ${this._content}
                         </div>
                         <div class='tooltip__target'></div>`;
     tooltipContainer.classList.add('tooltip');
+    tooltipContainer.setAttribute('data-object-reference', this._objectReference);
     tooltipContainer.insertAdjacentHTML('afterbegin', tooltipHtml);
+    this._tooltipTarget = tooltipContainer.querySelector('.tooltip__target');
     // insert tooltip container after target
     this._target.after(tooltipContainer);
     // get tooltip__target
-    const tooltipTarget = tooltipContainer.querySelector('.tooltip__target');
-    tooltipTarget.append(this._target);
+    this._tooltipTarget.append(this._target);
     this._tooltipItem = tooltipContainer.querySelector('.tooltip__item');
-    // set handlers
-    tooltipTarget.onmouseenter = this._showTooltip.bind(this);
-    tooltipTarget.onmouseleave = this._hideTooltip.bind(this);
+    // set handlers to show and hide toolTip
+    this._unFreeze();
     // set styles
     if(this._styles) this._tooltipItem.style.cssText = this._styles;
-    // this.setStyles(this._styles);
 }
-// Tooltip.prototype.setStyles = function(styles) {
-//     if(this._styles) {
-//         const stylesString = this._constructor.styleHyphenFormat(this._styles);
-//         this._tooltipItem.style.cssText = stylesString;
-//         return true;
-//     }
-//     console.log('styles are not defined, default styles will be defined');
-//     return false;
-// }
+/**
+ * set handlers to show and hide toolTip
+ */
+Tooltip.prototype._unFreeze = function() {
+    this.setHandlers(this._showTooltip.bind(this), this._hideTooltip.bind(this));
+}
+/**
+ * disable handlers to show and hide toolTip
+ */
+Tooltip.prototype._freeze = function() {
+    this.setHandlers(null, null);
+}
+// set handlers
+Tooltip.prototype.setHandlers = function(showHandler, hideHandler) {
+    this._tooltipTarget.onmouseenter = showHandler;
+    this._tooltipTarget.onmouseleave = hideHandler;
+}
+Tooltip.prototype._showTooltip = function() {
+    this._tooltipItem.classList.add('tooltip__item_active');
+}
+Tooltip.prototype._hideTooltip = function () {
+    this._tooltipItem.classList.remove('tooltip__item_active');
+}
 Tooltip.prototype.showStyles = function(allSheets = false) {
     if(this._styles) {
         console.log('this._styles\n', this._constructor.styleToMultiline(this._styles));
@@ -131,35 +128,17 @@ Tooltip.prototype.showStyles = function(allSheets = false) {
         }; 
     }
 }
-Tooltip.prototype._showTooltip = function() {
-    this._tooltipItem.classList.add('tooltip__item_active');
-}
-Tooltip.prototype._hideTooltip = function () {
-    this._tooltipItem.classList.remove('tooltip__item_active');
-}
 
-// instances
 
-// const tooltip = 
-new Tooltip('element', 'Hello I am Tooltip', 'left');
-// console.log(tooltip.currentPosition = 'bottom');
-// tooltip.currentPosition;
-// console.log('tooltip currentPosition', tooltip.currentPosition);
-// tooltip.showStyles();
-// console.log(tooltip);
-// const tooltip2 = 
-new Tooltip('element2', 'Hello I am Tooltip 2', 'right', {
+let obj = new Tooltip('tooltip-01', 'Hello I am Tooltip', 'left', null, 'obj');
+
+new Tooltip('tooltip-02', 'Hello I am Tooltip 2', 'right', {
         backgroundColor: 'green', 
         color: 'orange',
         borderBottom: '2px solid red',
         borderTop: '4px dashed blue',
     }); 
-//console.log(tooltip2);
-// tooltip2.currentPosition = 'top';
-// tooltip2.currentPosition = 'lefte';
-// console.log('tooltip2.id', tooltip2.id);
-// tooltip2.showStyles();
-//console.log(tooltip2.currentPosition);
+
 // inheritance
 function TooltipExt(targetClassName, content = 'I am tooltip extended', position = 'top', styles = {
         borderLeft: '2px solid red', color: 'green',
@@ -173,30 +152,6 @@ function TooltipExt(targetClassName, content = 'I am tooltip extended', position
 Object.setPrototypeOf(TooltipExt.prototype, Tooltip.prototype);
 // static method inheritance
 Object.setPrototypeOf(TooltipExt, Tooltip); // or: TooltipExt.__proto__ = Tooltip; 
-//const tooltipExt = 
-new TooltipExt('element3');
+
 console.log('archive', Tooltip.archive);
-// console.log('tooltipExt', tooltipExt);
-// console.log('TooltipExt.__proto__:', TooltipExt.__proto__);
-// tooltipExt.currentPosition = 'left';
-// tooltipExt.showStyles();
-// console.log('TooltipExt', TooltipExt);
-// console.log('tooltipExt.currentPosition', tooltipExt.currentPosition);
-// console.log('tooltipExt.constructor', tooltipExt.constructor);
-
-//var styleObj = document.styleSheets[0].cssRules[0].style;
-
-// for(const sheet of document.styleSheets) {
-//     // console.log('sheet', Array.isArray(sheet));
-//     console.log('sheet', sheet);
-//     const rules = sheet.cssRules;
-//     const target = rules.find(rule => rule.selectorText === {}) 
-// }
-// console.log(styleObj.cssText);
-
-// for (var i = styleObj.length; i--;) {
-//   var nameString = styleObj[i];
-//   styleObj.removeProperty(nameString);
-// }
-
-// console.log(styleObj.cssText);
+console.log(Tooltip.archive.get(obj));

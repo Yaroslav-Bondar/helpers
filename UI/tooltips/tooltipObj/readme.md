@@ -1,5 +1,3 @@
-
-
 ## links:
   - https://developer.mozilla.org/ru/docs/Web/API/Element/getAttribute
   - https://developer.mozilla.org/ru/docs/Web/API/Element/setAttribute
@@ -12,11 +10,27 @@
   - https://stackoverflow.com/questions/28814585/how-to-check-if-type-is-boolean
   - https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
   - https://learn.javascript.ru/mousemove-mouseover-mouseout-mouseenter-mouseleave
+  
+  - ### This:
+    - https://github.com/azat-io/you-dont-know-js-ru/blob/master/this%20%26%20object%20prototypes/ch2.md
+    - https://www.javascripttutorial.net/javascript-this/
+
+  - ### Get the reference name of an object?
+    - https://stackoverflow.com/questions/3827731/get-the-reference-name-of-an-object
+  
   - ### Sandboxes:
     - https://jsfiddle.net/Yaroslav_Bondar/gkp9u5qc/3/
+  
   - ### Uid generation:
     - https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
     - https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13#comment-1ol48
+  
+  - ### Constructor/prototype pattern:
+    - https://www.javascripttutorial.net/javascript-constructor-prototype/
+
+  - ### Get the reference name of an object?:
+    - https://stackoverflow.com/questions/3827731/get-the-reference-name-of-an-object
+  
   - ### Tooltips tasks:
     - https://learn.javascript.ru/task/behavior-nested-tooltip
     - https://learn.javascript.ru/task/behavior-tooltip

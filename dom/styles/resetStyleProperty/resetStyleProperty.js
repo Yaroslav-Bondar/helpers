@@ -7,9 +7,6 @@
  function resetStyleProperty(className, property) {
     const element = document.querySelector(`.${className}`);
     return function() {
-        if(element.style[property]) {
-            console.log('reset element style property');
-            element.style[property] = '';
-        }  
+        if(element.style[property]) element.style[property] = '';
     }
 }
