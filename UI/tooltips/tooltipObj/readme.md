@@ -30,7 +30,10 @@
 
   - ### Get the reference name of an object?:
     - https://stackoverflow.com/questions/3827731/get-the-reference-name-of-an-object
-  
+
+  - ### Check if a JavaScript Object is a DOM Object:
+    - https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
+
   - ### Tooltips tasks:
     - https://learn.javascript.ru/task/behavior-nested-tooltip
     - https://learn.javascript.ru/task/behavior-tooltip
