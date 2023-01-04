@@ -20,6 +20,7 @@ function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = 
     // this.id = this.constructor.uid(); 
     // this.constructor.archive.set(this, this.id);
     // this._availablePositions = new Set(['top', 'left', 'right', 'bottom']); // move it to the prototype !!!
+    this.createHtml();
     this.mount();
 }
 // static properties
@@ -86,35 +87,43 @@ Object.defineProperties(Tooltip.prototype, {
 });
 // prototype properties
 Tooltip.prototype._availablePositions = new Set(['top', 'left', 'right', 'bottom']);
-Tooltip.prototype._getTooltipHtml = (id, position, content) => 
-    `<div id=${id} class='tooltip__item tooltip__item_position_${position}'>
-                ${content}
-    </div>
-    <div class='tooltip__target'></div>`;
+// Tooltip.prototype._getTooltipHtml = (id, position, content) => 
+//     `<div id=${id} class='tooltip__item tooltip__item_position_${position}'>
+//                 ${content}
+//     </div>
+//     <div class='tooltip__target'></div>`;
 
 // prototype methods
 /**
+ * Creating the tooltip HTML-skeleton and setting styles
+ */
+Tooltip.prototype.createHtml = function() {
+    const html = `<div id=${this._id} class='tooltip__item tooltip__item_position_${this._position}'>
+                    ${this._content}
+                </div>
+                <div class='tooltip__target'></div>`;
+    this._tooltip = document.createElement('div');
+    this._tooltip.classList.add('tooltip');
+    this._tooltip.setAttribute('data-object-reference', this._objectReference);
+    this._tooltip.insertAdjacentHTML('afterbegin', html);
+    this._tooltipTarget = this._tooltip.querySelector('.tooltip__target');
+    this._tooltipItem = this._tooltip.querySelector('.tooltip__item');
+    // set tooltip styles
+    if(this._styles) this._tooltipItem.style.cssText = this._styles;
+}
+/**
  * Tooltip mounting in DOM
  */
-Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertMethod = this._initialInsertMethod, isFreeze = this._isFreeze) {
-    // make tooltip frame
-    if(!this._tooltip) {
-        this._tooltip = document.createElement('div');
-        this._tooltip.classList.add('tooltip');
-        this._tooltip.setAttribute('data-object-reference', this._objectReference);
-        this._tooltip.insertAdjacentHTML('afterbegin', this._getTooltipHtml(this._id, this._position, this._content));
-        this._tooltipTarget = this._tooltip.querySelector('.tooltip__target');
-        this._tooltipItem = this._tooltip.querySelector('.tooltip__item');
-        // set tooltip styles
-        if(this._styles) this._tooltipItem.style.cssText = this._styles;
-    }
+Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertMethod = this._initialInsertMethod) {
+    // tasks:
     // insert target into tooltip by condition
     if(!this._tooltipTarget.contains(this._target)) {
         this._tooltipTarget.append(this._target);
     }
     // insert tooltip into DOM by condition
-    // call a method with initial parameters, for example: mount(null, null, true);
-    // or mount(undefined, undefined, true);
+    // you can call the method with initial parameters, for example: mount(null, null, true);
+    // or mount(undefined, undefined, true); mount(undefined, null, true)
+    // or via getters: mount(this.initialMountPoint, this.initialInsertMethod, true);
     if(mountPoint === null) mountPoint = this._initialMountPoint;
     if(insertMethod === null) insertMethod = this._initialInsertMethod;
     // check previous parameters
@@ -126,27 +135,21 @@ Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertM
         if(this._prevMountPoint !== mountPoint) this._prevMountPoint = mountPoint;
         if(this._prevInsertMethod !== insertMethod) this._prevInsertMethod = insertMethod;
     }
-    // set handlers to show and hide tooltip
-    if(!isFreeze) {
-        this.unFreeze();
-        this._isFreeze = isFreeze;
-    } // check if handlers are installed !!!
-    else {
-        this.freeze();
-        this._isFreeze = isFreeze;
-    };
+    return this;
 }
 /**
  * set handlers to show and hide toolTip
  */
 Tooltip.prototype.unFreeze = function() {
     this.setHandlers(this._showTooltip.bind(this), this._hideTooltip.bind(this));
+    this._isFreeze = false;
 }
 /**
  * disable handlers to show and hide toolTip
  */
 Tooltip.prototype.freeze = function() {
     this.setHandlers(null, null);
+    this._isFreeze = true;
 }
 // set handlers
 Tooltip.prototype.setHandlers = function(showHandler, hideHandler) {
@@ -185,10 +188,10 @@ Tooltip.prototype.showStyles = function(allSheets = false) {
 
 
 let obj = new Tooltip('tooltip-01', 'Hello I am Tooltip', 'left', null, 'obj');
-console.log('obj.isFreeze', obj.isFreeze);
+// console.log('obj.isFreeze', obj.isFreeze);
 // debugger;
 // obj.mount(document.querySelector('.third-element'), 'after', true);
-console.log('obj.isFreeze', obj.isFreeze);
+// console.log('obj.isFreeze', obj.isFreeze);
 
 // new Tooltip('tooltip-02', 'Hello I am Tooltip 2', 'right', {
 //         backgroundColor: 'green', 
