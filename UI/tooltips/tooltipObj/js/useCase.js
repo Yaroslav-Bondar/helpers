@@ -16,36 +16,52 @@ function matchMediaHandler(x, fn, fn2, context) {
     }
 }
 
-// An example of using the freeze and unFreeze methods
-// Setting prohibition and permission to show hints
+// Examples of using the Tooltip constructor.
 
+// An example of using the freeze and unfreeze methods
+// Setting prohibition and permission to show hints
 // Call listener function at run time
-matchMediaHandler(matchMD_768, obj.freeze, obj.unFreeze, obj);
+// matchMediaHandler(matchMD_768, obj.freeze, obj.unfreeze, obj);
 // Attach listener function on state changes
 matchMD_768.addListener(x => {
-    // console.log('this in matchMediaHandler', this);
-    matchMediaHandler(x, obj.freeze, obj.unFreeze, obj);
+    // matchMediaHandler(x, obj.freeze, obj.unfreeze, obj);
 });
 
-
-// An example of using mount and freeze methods together 
-// insert tooltip into DOM by condition
-// Change the positions of the tooltip (set in the constructor) in the DOM tree
-// you can call the method with initial parameters, for example: mount(null, null, true);
-// or mount(undefined, undefined, true); mount(undefined, null, true)
-// or via getters: mount(this.initialMountPoint, this.initialInsertMethod, true);
-// Setting prohibition and permission to show hints (using freeze/unFreeze methods)
+// To select a specific option, comment or uncomment appropriate lines. 
 matchMD_450.addListener(x => {
     if(x.matches) {
-        obj.mount(document.querySelector('.third-element'), 'after').freeze();
+        // An example of using mount and freeze methods together: 
+        
+        // obj.mount(document.querySelector('.third-element'), 'after').freeze();
+        
+        // An example of usin the mount method:
+            // * You can call the method with initial parameters, for example: 
+            // * mount(undefined, undefined); mount(undefined, null); mount(null, null);
+            // * or via getters: mount(obj.initialMountPoint, obj.initialInsertMethod);
+            // * or without arguments: mount();
+        // obj.mount();    
+        // obj.mount(document.querySelector('.second-element'), 'after');
+            // incorrect insertion method
+        obj.mount(null, 'befor');
+        // An example of using the unmount method:
+            // remove tooltip from DOM:
+        // obj.unmount();
+            // remove tooltip from DOM and memory:
+        // console.log('obj', obj);
+        // obj = obj.unmount();
+        // console.log('obj', obj);
+
+    
     } else {
-        // obj.mount(obj._mountPoint, obj._insertMethod, false);
-        // obj.mount(document.querySelector('.second-element'), 'before', false);
-        // obj.mount(document.querySelector('.third-element'), 'after', true);
-        // call a method with initial parameters, for example: mount(null, null, true);
-        // or mount(undefined, undefined, true);
-        obj.mount(undefined, null).unFreeze();
-        // obj.mount(undefined, 'before', false);
+        // An example of using mount and freeze methods together: 
+        
+        // An example of usin the mount method:
+        // obj.mount(obj._mountPoint, obj._insertMethod);
+        // obj.mount(document.querySelector('.second-element'), 'after');
+        // obj.mount(document.querySelector('.third-element'), 'after');
+        // obj.mount(undefined, null).unfreeze();
+        // obj.mount(undefined, 'before');
+        // obj.mount();
     }
 });
 

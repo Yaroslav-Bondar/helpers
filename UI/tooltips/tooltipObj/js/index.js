@@ -1,6 +1,7 @@
 function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = null, objectReference) {
     this._target = document.getElementById(targetId);
-    this._isFreeze = false; 
+    this._isFreeze = false;
+    this._isMount = false; 
     this._content = content; 
     this._position = position; // check available position !!!
     this._objectReference = objectReference;
@@ -20,7 +21,9 @@ function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = 
     // this.id = this.constructor.uid(); 
     // this.constructor.archive.set(this, this.id);
     // this._availablePositions = new Set(['top', 'left', 'right', 'bottom']); // move it to the prototype !!!
-    this.createHtml();
+    this._createHtml();
+    // set handlers to show and hide toolTip
+    this.unfreeze();
     this.mount();
 }
 // static properties
@@ -45,7 +48,6 @@ Tooltip.getObjectById = () => {
 }
 // prototype getters/setters
 Object.defineProperties(Tooltip.prototype, {
-    // current position getter
     currentPosition: {
         get: function() {
             // console.log(`Position value is ${this._position}`);
@@ -83,21 +85,23 @@ Object.defineProperties(Tooltip.prototype, {
         get() {
             return this._initialMountPoint;
         }
-    }
+    },
+    isMount: {
+        get() {
+            return this._isMount;
+        }
+    },
 });
-// prototype properties
+// Prototype properties
 Tooltip.prototype._availablePositions = new Set(['top', 'left', 'right', 'bottom']);
-// Tooltip.prototype._getTooltipHtml = (id, position, content) => 
-//     `<div id=${id} class='tooltip__item tooltip__item_position_${position}'>
-//                 ${content}
-//     </div>
-//     <div class='tooltip__target'></div>`;
+// Tooltip.prototype._insertMethods = new Set(['before', 'after', 'prepend', 'append']);
 
-// prototype methods
+
+// Prototype methods
 /**
  * Creating the tooltip HTML-skeleton and setting styles
  */
-Tooltip.prototype.createHtml = function() {
+Tooltip.prototype._createHtml = function() {
     const html = `<div id=${this._id} class='tooltip__item tooltip__item_position_${this._position}'>
                     ${this._content}
                 </div>
@@ -112,25 +116,28 @@ Tooltip.prototype.createHtml = function() {
     if(this._styles) this._tooltipItem.style.cssText = this._styles;
 }
 /**
- * Tooltip mounting in DOM
+ * Mount a tooltip in the DOM.
+ * You can call the method with initial parameters, for example: 
+ * mount(undefined, undefined); mount(undefined, null); mount(null, null);
+ * or via getters: mount(obj.initialMountPoint, obj.initialInsertMethod);
+ * or without arguments: mount();
  */
 Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertMethod = this._initialInsertMethod) {
-    // tasks:
+    // if(!this._insertMethods.has(insertMethod)) throw Error('Incorrect insertion method !!!');
     // insert target into tooltip by condition
     if(!this._tooltipTarget.contains(this._target)) {
         this._tooltipTarget.append(this._target);
     }
     // insert tooltip into DOM by condition
-    // you can call the method with initial parameters, for example: mount(null, null, true);
-    // or mount(undefined, undefined, true); mount(undefined, null, true)
-    // or via getters: mount(this.initialMountPoint, this.initialInsertMethod, true);
+    // setting default mount options
     if(mountPoint === null) mountPoint = this._initialMountPoint;
     if(insertMethod === null) insertMethod = this._initialInsertMethod;
     // check previous parameters
-    if(this._prevMountPoint !== mountPoint || this._prevInsertMethod !== insertMethod) {
-        // console.log('start mount..., mountPoint', mountPoint);
+    if(this._prevMountPoint !== mountPoint || this._prevInsertMethod !== insertMethod || !this._isMount) {
+        console.log('start mount..., mountPoint', mountPoint);
         // mounting
         mountPoint[insertMethod](this._tooltip);
+        this._isMount = true;
         // set previous the mount point and insert method
         if(this._prevMountPoint !== mountPoint) this._prevMountPoint = mountPoint;
         if(this._prevInsertMethod !== insertMethod) this._prevInsertMethod = insertMethod;
@@ -138,24 +145,35 @@ Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertM
     return this;
 }
 /**
+ * Removing a tooltip from the DOM.
+ */
+Tooltip.prototype.unmount = function() {
+    this._initialMountPoint[this._initialInsertMethod](this._target);
+    this._tooltip.remove();
+    this._isMount = false;
+    console.log('tooltip is removed', this._tooltip);    
+    return null;
+}
+/**
  * set handlers to show and hide toolTip
  */
-Tooltip.prototype.unFreeze = function() {
-    this.setHandlers(this._showTooltip.bind(this), this._hideTooltip.bind(this));
+Tooltip.prototype.unfreeze = function() {
+    this._setHandlers(this._showTooltip.bind(this), this._hideTooltip.bind(this));
     this._isFreeze = false;
+    return this;
 }
 /**
  * disable handlers to show and hide toolTip
  */
 Tooltip.prototype.freeze = function() {
-    this.setHandlers(null, null);
+    this._setHandlers(null, null);
     this._isFreeze = true;
+    return this;
 }
 // set handlers
-Tooltip.prototype.setHandlers = function(showHandler, hideHandler) {
+Tooltip.prototype._setHandlers = function(showHandler, hideHandler) {
     this._tooltipTarget.onmouseenter = showHandler;
     this._tooltipTarget.onmouseleave = hideHandler;
-    // console.log('this._tooltipTarget.onmouseenter', this._tooltipTarget.onmouseenter);
 }
 Tooltip.prototype._showTooltip = function() {
     this._tooltipItem.classList.add('tooltip__item_active');
@@ -187,7 +205,7 @@ Tooltip.prototype.showStyles = function(allSheets = false) {
 }
 
 
-let obj = new Tooltip('tooltip-01', 'Hello I am Tooltip', 'left', null, 'obj');
+let obj = new Tooltip('tooltip-01', 'Hello I am Tooltip', 'top', null, 'obj');
 // console.log('obj.isFreeze', obj.isFreeze);
 // debugger;
 // obj.mount(document.querySelector('.third-element'), 'after', true);
