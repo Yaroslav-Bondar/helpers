@@ -27,7 +27,7 @@ matchMD_768.addListener(x => {
     // matchMediaHandler(x, obj.freeze, obj.unfreeze, obj);
 });
 
-// To select a specific option, comment or uncomment appropriate lines. 
+// To select a particular use case, comment or uncomment appropriate lines.  
 matchMD_450.addListener(x => {
     if(x.matches) {
         // An example of using mount and freeze methods together: 
@@ -39,10 +39,12 @@ matchMD_450.addListener(x => {
             // * mount(undefined, undefined); mount(undefined, null); mount(null, null);
             // * or via getters: mount(obj.initialMountPoint, obj.initialInsertMethod);
             // * or without arguments: mount();
+            // * insertion methods (defined as getters on the prototype): 
+            // * obj.BEFORE, obj.AFTER, obj.PREPEND, obj.APPEND
         // obj.mount();    
         // obj.mount(document.querySelector('.second-element'), 'after');
             // incorrect insertion method
-        obj.mount(null, 'befor');
+        obj.mount(null, obj.BEFORE);
         // An example of using the unmount method:
             // remove tooltip from DOM:
         // obj.unmount();

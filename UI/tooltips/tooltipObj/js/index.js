@@ -10,11 +10,10 @@ function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = 
     // define mount point and insert method
     if(this._target.previousElementSibling) {
         this._initialMountPoint = this._target.previousElementSibling;
-        this._initialInsertMethod = 'after';   // check the insert method, move to constant, make getter !!!
-        // this._target.previousElementSibling.after(tooltip);
+        this._initialInsertMethod = this.AFTER;
     } else {
         this._initialMountPoint = this._target.parentElement;
-        this._initialInsertMethod = 'prepend';
+        this._initialInsertMethod = this.PREPEND;
     }
     this._prevMountPoint;
     this._prevInsertMethod;
@@ -28,6 +27,7 @@ function Tooltip(targetId, content = 'I am tooltip', position = 'top', styles = 
 }
 // static properties
 Tooltip.archive = new WeakMap();
+
 // static methods
 /**
  * Generating a unique id. For more details see: 
@@ -91,11 +91,30 @@ Object.defineProperties(Tooltip.prototype, {
             return this._isMount;
         }
     },
+    BEFORE: {
+        get() {
+            return 'before';
+        }
+    },
+    AFTER: {
+        get() {
+            return 'after';
+        }
+    },
+    PREPEND: {
+        get() {
+            return 'prepend';
+        }
+    }, 
+    APPEND: {
+        get() {
+            return 'append';
+        }
+    },
 });
 // Prototype properties
 Tooltip.prototype._availablePositions = new Set(['top', 'left', 'right', 'bottom']);
-// Tooltip.prototype._insertMethods = new Set(['before', 'after', 'prepend', 'append']);
-
+Tooltip.prototype._mountInsertMethods = new Set([this.BEFORE, this.AFTER, this.PREPEND, this.APPEND]);
 
 // Prototype methods
 /**
@@ -123,7 +142,7 @@ Tooltip.prototype._createHtml = function() {
  * or without arguments: mount();
  */
 Tooltip.prototype.mount = function(mountPoint = this._initialMountPoint, insertMethod = this._initialInsertMethod) {
-    // if(!this._insertMethods.has(insertMethod)) throw Error('Incorrect insertion method !!!');
+    if(!this._mountInsertMethods.has(insertMethod)) throw Error('Incorrect insertion method !!!');
     // insert target into tooltip by condition
     if(!this._tooltipTarget.contains(this._target)) {
         this._tooltipTarget.append(this._target);
@@ -151,7 +170,7 @@ Tooltip.prototype.unmount = function() {
     this._initialMountPoint[this._initialInsertMethod](this._target);
     this._tooltip.remove();
     this._isMount = false;
-    console.log('tooltip is removed', this._tooltip);    
+    // console.log('tooltip is removed', this._tooltip);    
     return null;
 }
 /**
