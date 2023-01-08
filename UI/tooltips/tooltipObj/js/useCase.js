@@ -44,7 +44,7 @@ matchMD_450.addListener(x => {
         // obj.mount();    
         // obj.mount(document.querySelector('.second-element'), 'after');
             // incorrect insertion method
-        obj.mount(null, obj.BEFORE);
+        obj.mount(null, obj.APPEND);
         // An example of using the unmount method:
             // remove tooltip from DOM:
         // obj.unmount();

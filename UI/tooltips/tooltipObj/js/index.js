@@ -114,7 +114,7 @@ Object.defineProperties(Tooltip.prototype, {
 });
 // Prototype properties
 Tooltip.prototype._availablePositions = new Set(['top', 'left', 'right', 'bottom']);
-Tooltip.prototype._mountInsertMethods = new Set([this.BEFORE, this.AFTER, this.PREPEND, this.APPEND]);
+Tooltip.prototype._mountInsertMethods = new Set([Tooltip.prototype.BEFORE, Tooltip.prototype.AFTER, Tooltip.prototype.PREPEND, Tooltip.prototype.APPEND]);
 
 // Prototype methods
 /**
