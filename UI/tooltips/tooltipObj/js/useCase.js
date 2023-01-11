@@ -20,8 +20,10 @@ function matchMediaHandler(x, fn, fn2, context) {
 
 // An example of using the freeze and unfreeze methods
 // Setting prohibition and permission to show hints
+
 // Call listener function at run time
 // matchMediaHandler(matchMD_768, obj.freeze, obj.unfreeze, obj);
+
 // Attach listener function on state changes
 matchMD_768.addListener(x => {
     // matchMediaHandler(x, obj.freeze, obj.unfreeze, obj);
@@ -44,7 +46,9 @@ matchMD_450.addListener(x => {
         // obj.mount();    
         // obj.mount(document.querySelector('.second-element'), 'after');
             // incorrect insertion method
-        obj.mount(null, obj.APPEND);
+        // obj.mount(null, 'ddfd');
+        // obj.mount(null, obj.BEFORE);
+
         // An example of using the unmount method:
             // remove tooltip from DOM:
         // obj.unmount();
@@ -53,7 +57,17 @@ matchMD_450.addListener(x => {
         // obj = obj.unmount();
         // console.log('obj', obj);
 
-    
+        // An example of using the position setting method:
+        // obj.setPosition('bottom');
+        // obj.setPosition(null).setPosition('bottom').setPosition('bottom').setPosition('4');
+        // obj.mount(null, obj.BEFORE).setPosition(obj.BOTTOM);
+        // obj.mount(null, obj.BEFORE).setPosition(null);
+        // obj.mount(null, obj.BEFORE).setPosition('wrong position');
+
+        // An example of using the content setting method:
+        // obj.setContent().setContent();
+        // obj.setContent('Yahoo').setContent('Yahoo').setContent().setContent(4);
+
     } else {
         // An example of using mount and freeze methods together: 
         
@@ -64,6 +78,8 @@ matchMD_450.addListener(x => {
         // obj.mount(undefined, null).unfreeze();
         // obj.mount(undefined, 'before');
         // obj.mount();
+
+        // An example of removing a tooltip:
     }
 });
 
