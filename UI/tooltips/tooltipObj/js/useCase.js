@@ -43,8 +43,8 @@ matchMD_450.addListener(x => {
             // * or without arguments: mount();
             // * insertion methods (defined as getters on the prototype): 
             // * obj.BEFORE, obj.AFTER, obj.PREPEND, obj.APPEND
+        obj.mount(document.querySelector('.second-element'), 'after');
         // obj.mount();    
-        // obj.mount(document.querySelector('.second-element'), 'after');
             // incorrect insertion method
         // obj.mount(null, 'ddfd');
         // obj.mount(null, obj.BEFORE);

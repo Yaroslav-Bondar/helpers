@@ -1,51 +1,3 @@
-function Tooltip(targetId, content, position, styles = null, objectReference = null) {
-    this._target = document.getElementById(targetId); // getter, setter
-    this._isFreeze = false;
-    this._isMount = false; 
-    // this._position = this.TOP;
-    this._objectReference = objectReference;
-    this._styles = styles ? this.constructor.styleHyphenFormat(styles) : styles;
-    this.constructor.archive.set(this, objectReference);
-    // define mount point and insert method
-    if(this._target.previousElementSibling) {
-        this._initialMountPoint = this._target.previousElementSibling;
-        this._initialInsertMethod = this.AFTER;
-    } else {
-        this._initialMountPoint = this._target.parentElement;
-        this._initialInsertMethod = this.PREPEND;
-    }
-    this._prevMountPoint;
-    this._prevInsertMethod;
-    // this.id = this.constructor.uid(); 
-    // this.constructor.archive.set(this, this.id);
-    this._createHtml();
-    this.setContent(content);
-    this.setPosition(position);
-    // set handlers to show and hide toolTip
-    this.unfreeze();
-    this.mount();
-}
-// static properties
-Tooltip.archive = new WeakMap();
-
-// static methods
-/**
- * Generating a unique id. For more details see: 
- * https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13#comment-1ol48
- */
-Tooltip.uid = () => String(Date.now().toString(36) + Math.random().toString(16)).replace(/\./g, '');
-Tooltip.upperToHyphenLower = upper => '-' + upper.toLowerCase();
-Tooltip.styleToMultiline = style => style.replace(/;/g, ';\n');
-Tooltip.styleHyphenFormat = function(styles) {
-    let str = JSON.stringify(styles);
-    let output = str.replace(/[{"}]/g, '')
-				        .replace(/,/g, ';')
-                        .replace(/[A-Z]/g, this.upperToHyphenLower) + ';';
-    return output;
-}
-Tooltip.getObjectById = () => {
-    
-}
 // prototype getters/setters
 Object.defineProperties(Tooltip.prototype, {
     // getters:
@@ -151,6 +103,46 @@ Object.defineProperties(Tooltip.prototype, {
         }
     },
 });
+
+function Tooltip(targetId, content, position, styles = null, objectReference = null) {
+    this._target = document.getElementById(targetId); // getter, setter
+    this._isFreeze = false;
+    this._isMount = false; 
+    // this._position = this.TOP;
+    this._objectReference = objectReference;
+    this._styles = styles ? this.constructor.styleHyphenFormat(styles) : styles;
+    this.constructor.archive.set(this, objectReference);
+    // this.id = this.constructor.uid(); 
+    // this.constructor.archive.set(this, this.id);
+    this._createHtml();
+    this.setContent(content);
+    this.setPosition(position);
+    // set handlers to show and hide toolTip
+    this.unfreeze();
+    this.mount();
+}
+// static properties
+Tooltip.archive = new WeakMap();
+
+// static methods
+/**
+ * Generating a unique id. For more details see: 
+ * https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13#comment-1ol48
+ */
+Tooltip.uid = () => String(Date.now().toString(36) + Math.random().toString(16)).replace(/\./g, '');
+Tooltip.upperToHyphenLower = upper => '-' + upper.toLowerCase();
+Tooltip.styleToMultiline = style => style.replace(/;/g, ';\n');
+Tooltip.styleHyphenFormat = function(styles) {
+    let str = JSON.stringify(styles);
+    let output = str.replace(/[{"}]/g, '')
+				        .replace(/,/g, ';')
+                        .replace(/[A-Z]/g, this.upperToHyphenLower) + ';';
+    return output;
+}
+Tooltip.getObjectById = () => {
+    
+}
+
 // Prototype properties
 Tooltip.prototype._positions = new Set([Tooltip.prototype.TOP, Tooltip.prototype.BOTTOM, Tooltip.prototype.RIGHT, Tooltip.prototype.LEFT]);
 Tooltip.prototype._mountInsertMethods = new Set([Tooltip.prototype.BEFORE, Tooltip.prototype.AFTER, Tooltip.prototype.PREPEND, Tooltip.prototype.APPEND]);
@@ -177,13 +169,13 @@ Tooltip.prototype._createHtml = function() {
  */
 Tooltip.prototype.setContent = function(content) {
     // set default values
-    console.log('start setContent');
+    // console.log('start setContent');
     if(content === undefined || content === null) content = this.CONTENT;
     if(typeof content != 'string') throw Error('Content must be a string !!!');
     if(this._content == content) return this;
     // set content
     this._tooltipItem.textContent = content;
-    console.log('content was chenged');
+    // console.log('content was chenged');
     this._content = content;
     return this;
 }
@@ -219,6 +211,16 @@ Tooltip.prototype.setPosition = function(position) {
  * or without arguments: mount();
  */
 Tooltip.prototype.mount = function(mountPoint, insertMethod) {
+    // define initial mount point and initial insert method
+    if(!this._initialMountPoint && !this._initialInsertMethod) {
+        if(this._target.previousElementSibling) {
+            this._initialMountPoint = this._target.previousElementSibling;
+            this._initialInsertMethod = this.AFTER;
+        } else {
+            this._initialMountPoint = this._target.parentElement;
+            this._initialInsertMethod = this.PREPEND;
+        }
+    }
     // setting default mount options
     if(mountPoint === null || mountPoint === undefined) mountPoint = this._initialMountPoint;
     if(insertMethod === null || insertMethod === undefined) insertMethod = this._initialInsertMethod;
