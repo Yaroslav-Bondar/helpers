@@ -43,7 +43,7 @@ matchMD_450.addListener(x => {
             // * or without arguments: mount();
             // * insertion methods (defined as getters on the prototype): 
             // * obj.BEFORE, obj.AFTER, obj.PREPEND, obj.APPEND
-        obj.mount(document.querySelector('.second-element'), 'after');
+        // obj.mount(document.querySelector('.second-element'), 'after');
         // obj.mount();    
             // incorrect insertion method
         // obj.mount(null, 'ddfd');
@@ -67,7 +67,22 @@ matchMD_450.addListener(x => {
         // An example of using the content setting method:
         // obj.setContent().setContent();
         // obj.setContent('Yahoo').setContent('Yahoo').setContent().setContent(4);
-
+        
+        // An example of usin the target setting method:
+            // wrong id
+        // obj.setTarget(4);
+            // same id
+        obj.setTarget('tooltip-01').setTarget('tooltip-01');
+            // non-existent id
+        // obj.setTarget('tooltip-01');
+            // other target
+        // obj.setTarget('tooltip-03');
+        // obj.setTarget('tooltip-03').setTarget('tooltip-03');
+            // chain call
+        // obj.setTarget('tooltip-03').setTarget('tooltip-03');
+        obj.setTarget('tooltip-02')
+            .mount(document.querySelector('.container2'), 'before')
+            .setContent('3').setPosition('right');
     } else {
         // An example of using mount and freeze methods together: 
         

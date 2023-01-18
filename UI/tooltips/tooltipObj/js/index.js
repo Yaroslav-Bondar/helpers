@@ -1,8 +1,13 @@
 // prototype getters/setters
 Object.defineProperties(Tooltip.prototype, {
     // getters:
+    target: {
+        get() {
+            return this._target;
+        }
+    },
     position: {
-        get: function() {
+        get() {
             return this._position;
         }
     },
@@ -104,8 +109,8 @@ Object.defineProperties(Tooltip.prototype, {
     },
 });
 
-function Tooltip(targetId, content, position, styles = null, objectReference = null) {
-    this._target = document.getElementById(targetId); // getter, setter
+function Tooltip(id, content, position, styles = null, objectReference = null) {
+    this.setTarget(id);
     this._isFreeze = false;
     this._isMount = false; 
     // this._position = this.TOP;
@@ -149,6 +154,35 @@ Tooltip.prototype._mountInsertMethods = new Set([Tooltip.prototype.BEFORE, Toolt
 
 // Prototype methods
 /**
+ * Set the target element for the tooltip.
+ */
+Tooltip.prototype.setTarget = function(id) {
+    if(typeof id !== 'string') throw new Error('The identifier must be a string type !!!');
+    const newTarget = document.getElementById(`${id}`);
+    if(newTarget === null) throw new Error('Invalid id, element not found !!!'); 
+    // set target on initialization
+    if(!this._target) {
+        this._target = newTarget
+        return;
+    };
+    if(this._target.id == id) {
+        console.warn('A target with this id already exists.');
+        return this;
+    }
+    // check for a tooltip 
+    if(newTarget.closest('.tooltip[data-object-reference]')) {
+        console.warn('The element with this id already contains a tooltip.');
+        return this;
+    };
+    this.unmount();
+    this._target = newTarget;
+    // setting the initial mount point and initial mount method 
+    // to undefined to trigger their  redefinition in the mount method
+    this._initialMountPoint = this._initialInsertMethod = undefined;
+    this.mount();
+    return this;
+}
+/**
  * Creating the tooltip HTML-skeleton and setting styles
  */
 Tooltip.prototype._createHtml = function() {
@@ -169,13 +203,14 @@ Tooltip.prototype._createHtml = function() {
  */
 Tooltip.prototype.setContent = function(content) {
     // set default values
-    // console.log('start setContent');
     if(content === undefined || content === null) content = this.CONTENT;
     if(typeof content != 'string') throw Error('Content must be a string !!!');
-    if(this._content == content) return this;
+    if(this._content == content) {
+        console.warn('This content is already installed.');
+        return this
+    };
     // set content
     this._tooltipItem.textContent = content;
-    // console.log('content was chenged');
     this._content = content;
     return this;
 }
