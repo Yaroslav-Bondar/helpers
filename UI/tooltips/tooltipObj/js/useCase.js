@@ -75,6 +75,7 @@ matchMD_450.addListener(x => {
         obj.setTarget('tooltip-01').setTarget('tooltip-01');
             // non-existent id
         // obj.setTarget('tooltip-01');
+        // obj.setTarget(undefined)
             // other target
         // obj.setTarget('tooltip-03');
         // obj.setTarget('tooltip-03').setTarget('tooltip-03');

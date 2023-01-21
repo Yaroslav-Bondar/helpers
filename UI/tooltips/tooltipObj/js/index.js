@@ -36,7 +36,7 @@ Object.defineProperties(Tooltip.prototype, {
             return this._content;
         }
     },
-    // Constants:
+    // constants:
     BEFORE: {
         get() {
             return 'before';
@@ -55,6 +55,11 @@ Object.defineProperties(Tooltip.prototype, {
     APPEND: {
         get() {
             return 'append';
+        }
+    },
+    AFTERBEGIN: {
+        get() {
+            return 'afterbegin';
         }
     },
     TOP: {
@@ -107,14 +112,16 @@ Object.defineProperties(Tooltip.prototype, {
             return 'tooltip__target';
         }
     },
+    DATA_OBJECT_REFERENCE_ATTRIBUTE: {
+        get() {
+            return 'data-object-reference';
+        }
+    }    
 });
 
 function Tooltip(id, content, position, styles = null, objectReference = null) {
     this.setTarget(id);
-    this._isFreeze = false;
-    this._isMount = false; 
-    // this._position = this.TOP;
-    this._objectReference = objectReference;
+    this._objectReferenceValue = objectReference; // make a setter for this property
     this._styles = styles ? this.constructor.styleHyphenFormat(styles) : styles;
     this.constructor.archive.set(this, objectReference);
     // this.id = this.constructor.uid(); 
@@ -122,7 +129,6 @@ function Tooltip(id, content, position, styles = null, objectReference = null) {
     this._createHtml();
     this.setContent(content);
     this.setPosition(position);
-    // set handlers to show and hide toolTip
     this.unfreeze();
     this.mount();
 }
@@ -170,14 +176,14 @@ Tooltip.prototype.setTarget = function(id) {
         return this;
     }
     // check for a tooltip 
-    if(newTarget.closest('.tooltip[data-object-reference]')) {
+    if(newTarget.closest(`.tooltip[${this.DATA_OBJECT_REFERENCE_ATTRIBUTE}]`)) {
         console.warn('The element with this id already contains a tooltip.');
         return this;
     };
     this.unmount();
     this._target = newTarget;
     // setting the initial mount point and initial mount method 
-    // to undefined to trigger their  redefinition in the mount method
+    // to undefined to trigger their redefinition in the mount method
     this._initialMountPoint = this._initialInsertMethod = undefined;
     this.mount();
     return this;
@@ -186,13 +192,12 @@ Tooltip.prototype.setTarget = function(id) {
  * Creating the tooltip HTML-skeleton and setting styles
  */
 Tooltip.prototype._createHtml = function() {
-    // tooltip__item_position_${this._position}
     const html = `<div id=${this._id} class=${this.TOOLTIP_ITEM_CLASS}></div>
                 <div class=${this.TOOLTIP_TARGET_CLASS}></div>`;
     this._tooltip = document.createElement('div');
     this._tooltip.classList.add(`${this.TOOLTIP_CLASS}`);
-    this._tooltip.setAttribute('data-object-reference', this._objectReference);
-    this._tooltip.insertAdjacentHTML('afterbegin', html);
+    this._tooltip.setAttribute(`${this.DATA_OBJECT_REFERENCE_ATTRIBUTE}`, this._objectReferenceValue);
+    this._tooltip.insertAdjacentHTML(`${this.AFTERBEGIN}`, html);
     this._tooltipTarget = this._tooltip.querySelector(`.${this.TOOLTIP_TARGET_CLASS}`);
     this._tooltipItem = this._tooltip.querySelector(`.${this.TOOLTIP_ITEM_CLASS}`);
     // set tooltip styles
